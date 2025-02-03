@@ -1,0 +1,80 @@
+# Ignore secrets and sensitive information
+secrets.yaml
+/secrets/
+*.secrets
+
+# Ignore compiled Python files
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore log files
+*.log
+home-assistant.log
+home-assistant_v2.db
+*.db-shm
+*.db-wal
+
+# Ignore backups and cache files
+.backups/
+.cloud/
+.storage/
+*.swp
+*.swo
+*.tmp
+*.bak
+
+# Ignore database and history files
+/home-assistant_v2.db*
+/home-assistant_history.db*
+/home-assistant*.db-journal
+
+# Ignore custom_components cache
+/custom_components/*/__pycache__/
+/custom_components/*/*.pyc
+/custom_components/*/*.pyo
+
+# Ignore ESPHome build artifacts
+/esphome/.esphome/
+.esphome/
+
+# Ignore Lovelace UI-generated files
+.ui-lovelace.yaml
+
+# Ignore Home Assistant core files
+/home-assistant.log
+/home-assistant_v2.db
+/home-assistant*.db-shm
+/home-assistant*.db-wal
+
+# Ignore HA cloud-related files
+.cloud/
+.google.token
+.ios.conf
+
+# Ignore Python virtual environment
+venv/
+.env/
+*.env
+
+# Ignore Node-RED-related files
+/node-red/
+*.node-red/
+flows_*.json
+flows_*.backup.json
+
+# Ignore VS Code and IDE files
+.vscode/
+*.code-workspace
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Ignore temporary and system files
+.DS_Store
+Thumbs.db
+*.bak
+*.tmp
+*.swp
+*.swo
+*.orig
