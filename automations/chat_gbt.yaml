@@ -1,0 +1,36 @@
+alias: Chat GBT
+description: ""
+triggers:
+  - trigger: time
+    at: "20:23:00"
+conditions: []
+actions:
+  - action: weather.get_forecasts
+    target:
+      area_id: office
+    data:
+      type: daily
+    response_variable: daily_forecast
+  - action: conversation.process
+    data:
+      agent_id: conversation.chatgpt
+      text: >-
+        You are an advanced smart home with a built-in personal weather station.
+        Please provide a short, funny, and educational weather update **only for
+        today**, spoken in the morning for the day ahead, for Evie (age 7) that
+        is spoken out loud, so do not include emojis. Mention day, date, and
+        month, use whole numbers, and keep it less than 10 seconds. Begin with->
+        ‘Good Morning Evie! Today is {{ states('input_text.todays_day_of_week')
+        }}, the {{ states('input_text.todays_date_ordinal') }} of {{
+        states('input_text.todays_month_name') }}.’. The weather forecast is->
+        {{ daily_forecast }}.
+    response_variable: agent
+  - action: tts.speak
+    metadata: {}
+    data:
+      cache: false
+      media_player_entity_id: media_player.google_evie_s_bedroom_nest_mini
+      message: "{{agent.response.speech.plain.speech}}"
+    target:
+      entity_id: tts.google_translate_en_ie
+mode: single
