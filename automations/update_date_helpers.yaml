@@ -1,0 +1,32 @@
+alias: Update Date Helpers
+description: Updates "Today's Date Ordinal", "Today's Day of Week" and "Today's Month Name" helpers at midnight
+trigger:
+  - platform: time
+    at: "00:00:10"
+action:
+  - service: input_text.set_value
+    target:
+      entity_id: input_text.todays_date_ordinal
+    data:
+      value: >-
+        {% set day_num = now().day %} 
+        {% if day_num in [1, 21, 31] %}
+          {{ day_num }}st
+        {% elif day_num in [2, 22] %}
+          {{ day_num }}nd
+        {% elif day_num in [3, 23] %}
+          {{ day_num }}rd
+        {% else %}
+          {{ day_num }}th
+        {% endif %}
+  - service: input_text.set_value
+    target:
+      entity_id: input_text.todays_day_of_week
+    data:
+      value: "{{ now().strftime('%A') }}"
+  - service: input_text.set_value
+    target:
+      entity_id: input_text.todays_month_name
+    data:
+      value: "{{ now().strftime('%B') }}"
+mode: single
