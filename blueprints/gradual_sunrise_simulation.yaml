@@ -1,0 +1,72 @@
+blueprint:
+  name: Gradual Sunrise Simulation
+  description: >
+    Simulates a sunrise by gradually increasing brightness from 0 to 255 and
+    color temperature from the light's minimum (in Kelvin) to 5500K.
+  domain: automation
+  input:
+    light_target:
+      name: Light Entity
+      description: The light to control for the sunrise simulation.
+      selector:
+        entity:
+          domain: light
+    trigger_time:
+      name: Start Time
+      description: Time to start the sunrise simulation
+      selector:
+        time:
+    total_duration:
+      name: Total Duration (minutes)
+      description: Total time over which brightness and color temperature increase.
+      default: 5
+      selector:
+        number:
+          min: 1
+          max: 120
+          unit_of_measurement: min
+          mode: slider
+
+variables:
+  light_entity: !input 'light_target'
+  duration_seconds: "{{ input.total_duration * 60 }}"
+  tick_time: "{{ duration_seconds / 255 }}"
+
+trigger:
+  - platform: time
+    at: !input trigger_time
+
+condition: []
+
+action:
+  # Initialize light with brightness 0, fixed white RGB, and minimum Kelvin
+  - service: light.turn_on
+    target:
+      entity_id: "{{ light_entity }}"
+    data:
+      brightness: 0
+      rgb_color: [255, 255, 255]
+      kelvin: "{{ state_attr(light_entity, 'min_color_temp_kelvin') }}"
+      
+  # Repeat 255 times to go from 0 to 255 brightness
+  - repeat:
+      count: 255
+      sequence:
+        - delay:
+            seconds: "{{ tick_time }}"
+        - service: light.turn_on
+          target:
+            entity_id: "{{ light_entity }}"
+          data:
+            brightness: "{{ repeat.index }}"
+            rgb_color: [255, 255, 255]
+            kelvin: >
+              {{
+                (state_attr(light_entity, 'min_color_temp_kelvin') | int)
+                +
+                (((5500 - (state_attr(light_entity, 'min_color_temp_kelvin') | int)) * repeat.index) / 255)
+                | int
+              }}
+
+mode: single
+max_exceeded: silent
